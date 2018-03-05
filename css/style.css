@@ -1,0 +1,31 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body>div {
+    float: left;
+    margin: 10px;
+}
+
+#control>* {
+    display: block;
+    width: 100px;
+    margin: 4px;
+}
+
+#root {
+    position: relative;
+}
+
+.pole {
+    background-image: url("../gfx/hex3.png");
+    width: 115px;
+    height: 100px;
+    position: absolute;
+}
+
+.choosen {
+    background-color: red;
+    border: 2px solid green;
+}
