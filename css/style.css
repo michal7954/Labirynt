@@ -23,6 +23,25 @@ body>div {
     width: 115px;
     height: 100px;
     position: absolute;
+    z-index: 2;
+}
+
+.pole p {
+    position: relative;
+    left: 48px;
+    bottom: 64px;
+    font-size: 20px;
+    display: block;
+    margin: 0 auto;
+    font-weight: bold;
+    color: red;
+}
+
+.arr {
+    background-image: url("../gfx/arr.png");
+    width: 115px;
+    height: 100px;
+    ] z-index: -1;
 }
 
 .choosen {
