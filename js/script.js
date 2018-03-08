@@ -6,7 +6,6 @@ $(document).ready(function () {
     //----------- PRZYGOTOWANIE PANELU KONTROLNEGO
 
     var size = $("<select>").attr("id", "size");
-    for (i = 3; i < 14; i++) {
     for (i = 5; i < 14; i++) {
         var option = $("<option>")
             .val(i)
