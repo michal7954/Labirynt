@@ -7,6 +7,7 @@ $(document).ready(function () {
 
     var size = $("<select>").attr("id", "size");
     for (i = 3; i < 14; i++) {
+    for (i = 5; i < 14; i++) {
         var option = $("<option>")
             .val(i)
             .html(i);
@@ -30,26 +31,27 @@ $(document).ready(function () {
         $("#control").append(button);
     }
 
-
-    //---------- EVENTS
-
     $("#root").empty();
     draw(5);
 
+
+    //---------- EVENTS
+
     $("#size").on("change", function () {
+        data = []
+        hexy = [];
         $("#root").empty();
         var size = $("#size").val();
         draw(size);
     });
 
     function draw(size) {
-        hexy = []
         for (i = 0; i < size; i++) {        //kolumny
+            var tab = [];
             for (j = 0; j < size - 1; j++) {    //wiersze
                 var pole = $("<div>")
                     .attr("class", "pole")
                     .css("left", i * 87)
-                    .css("top", j * 100)
                     .data("x", i)
                     .data("y", j)
 
@@ -59,60 +61,136 @@ $(document).ready(function () {
                 else {
                     pole.css("top", j * 100 + 50)
                 }
-                hexy.push(pole[0])
                 $("#root").append(pole);
+                tab.push(pole[0])
             }
+            hexy.push(tab)
         }
 
-        console.log(hexy)
-
         $(".pole").on("click", function (e) {
-            //console.log(e)
-            //console.log(hexy.indexOf(e.currentTarget))
-
-            //$(e.currentTarget).empty();
-
-
-            var obj = { index: hexy.indexOf(e.currentTarget), number: data.length, x: $(e.currentTarget).data("x"), y: $(e.currentTarget).data("y"), element: e.currentTarget, poz: 0, dirOut: 0, dirIn: 3, type: choosen[0].toUpperCase(), long_type: choosen }
-
-            var num = -1;
-            var istnieje = false;
-
-            for (i = 0; i < data.length; i++) {
-                if (data[i].index == hexy.indexOf(e.currentTarget)) {
-                    istnieje = true
-                    num = i;
-                }
-            }
-            if (!istnieje) {
-                var arr = $("<div>")
-                    .attr("class", "arr")
-                $(e.currentTarget).append(arr);
-
-                var p = $("<p>")
-                    .text(obj.type)
-                obj.element.append(p[0])
-
-                data.push(obj)
-
-            }
-            else {
-                data[num].poz++;
-                data[num].dirOut = (data[num].dirOut + 1) % 6;
-                data[num].dirIn = (data[num].dirIn + 1) % 6;
-                data[num].element.children[0].style.transform = "rotate(" + data[num].poz * 60 + "deg)";
-
-                data[num].type = choosen[0].toUpperCase()
-                data[num].element.children[1].innerHTML = data[num].type
-            }
-
-
-            console.log(data)
-
+            click_event(e)
         })
+
+        console.log(hexy)
     }
 
-    //----------- EVENT KLIK HEXAGON
+    function click_event(e) {
 
+
+        var obj = {
+            index: data.length,
+            x: $(e.currentTarget).data("x"),
+            y: $(e.currentTarget).data("y"),
+            dirOut: 0,
+            dirIn: 3,
+            type: choosen
+        }
+
+        var num = -1;
+        var istnieje = false;
+
+        for (i = 0; i < data.length; i++) {
+            if (data[i].x == $(e.currentTarget).data("x") && data[i].y == $(e.currentTarget).data("y")) {
+                istnieje = true
+                num = i;
+                i = data.length;
+            }
+        }
+        if (!istnieje) {
+            data.push(obj)
+        }
+        else {
+            data[num].dirOut = (data[num].dirOut + 1) % 6;
+            data[num].dirIn = (data[num].dirIn + 1) % 6;
+            data[num].type = choosen
+        }
+
+        //console.log(data)
+        update()
+
+        //-------------------------------
+
+        /*
+        var obj = {
+            index: data.length,
+            x: $(e.currentTarget).data("x"),
+            y: $(e.currentTarget).data("y"),
+            dirOut: 0,
+            dirIn: 3,
+            type: choosen
+        }
+
+        var num = -1;
+        var istnieje = false;
+
+        for (i = 0; i < data.length; i++) {
+            if (data[i].x == $(e.currentTarget).data("x") && data[i].y == $(e.currentTarget).data("y")) {
+                istnieje = true
+                num = i;
+                i = data.length;
+            }
+        }
+        if (!istnieje) {
+            var arr = $("<div>")
+                .attr("class", "arr")
+            $(e.currentTarget).append(arr);
+
+            var p = $("<p>")
+                .text(obj.type[0].toUpperCase())
+            $(e.currentTarget).append(p[0])
+
+            data.push(obj)
+
+        }
+        else {
+            data[num].dirOut = (data[num].dirOut + 1) % 6;
+            data[num].dirIn = (data[num].dirIn + 1) % 6;
+            e.currentTarget.children[0].style.transform = "rotate(" + data[num].dirOut * 60 + "deg)";
+
+            data[num].type = choosen
+            e.currentTarget.children[1].innerHTML = data[num].type[0].toUpperCase();
+        }
+
+        console.log(data)
+
+        */
+    }
+
+    //-------- UPDATE WIDOKU Z OBIEKTU GŁÓWNEGO
+    function update() {
+
+        /*
+        $("#root").empty();
+        var size = $("#size").val();
+        draw(size);
+        */
+
+        $(".arr").each(function () {
+            $(this).remove();
+        })
+        $("p").each(function () {
+            $(this).remove();
+        })
+
+
+        for (i = 0; i < data.length; i++) {
+
+            var hex = hexy[data[i].x][data[i].y]
+            //console.log(hex)
+
+            var arr = $("<div>")
+                .attr("class", "arr")
+            $(hex).append(arr);
+
+            var p = $("<p>")
+                .text(data[i].type[0].toUpperCase())
+            $(hex).append(p[0])
+
+            hex.children[0].style.transform = "rotate(" + data[i].dirOut * 60 + "deg)";
+            hex.children[1].innerHTML = data[i].type[0].toUpperCase();
+        }
+
+        //console.log($(".pole"))
+    }
 
 })
