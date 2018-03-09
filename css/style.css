@@ -35,7 +35,7 @@ body>div {
     display: block;
     margin: 0 auto;
     font-weight: bold;
-    color: red;
+    color: black;
 }
 
 .arr {
@@ -48,4 +48,26 @@ body>div {
 .choosen {
     background-color: red;
     border: 2px solid green;
+}
+
+#area {
+    position: relative;
+}
+
+#textarea {
+    color: blue;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial;
+    background-color: gray;
+    border: 2px solid red;
+}
+
+#restore {
+    position: absolute;
+    bottom: -40px;
+    left: 0px;
+    height: 40px;
+    width: 346px;
+    font-size: 180%;
 }
