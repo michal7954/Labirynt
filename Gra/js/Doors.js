@@ -1,0 +1,1 @@
+// drzwi w hexagonie
