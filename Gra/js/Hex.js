@@ -2,25 +2,22 @@
 
 function Hex() {
 
-    var radius = 100 // wielkość hexagona, a tym samym całego labiryntu
+    var radius = 200 // wielkość hexagona, a tym samym całego labiryntu
 
     var container = new THREE.Object3D()
-    /*
+
+    var geometry = new THREE.BoxGeometry(1.2 * radius, 0.75 * radius, 0.1 * radius);
+    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     var wall = new THREE.Mesh(geometry, material);
+    var side = [];
 
     for (var i = 0; i < 6; i++) {
-        var side = wall.clone()
-        side.position.x = 0;
-        side.position.z = 0;
-        side.lookAt(container.position)
-        //container.add(side)
-
+        side[i] = wall.clone()
+        side[i].position.x = Math.sin(Math.PI / 3 * i) * radius;
+        side[i].position.z = Math.cos(Math.PI / 3 * i) * radius;
+        side[i].lookAt(container.position)
+        container.add(side[i])
     }
-    */
-    var geometry = new THREE.BoxGeometry(100, 100, 20);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    var cube = new THREE.Mesh(geometry, material);
-    container.add(cube)
 
     this.getHex = function () {
         return container

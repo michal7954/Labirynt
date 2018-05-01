@@ -3,6 +3,8 @@
 $(document).ready(function () {
 
     var hex = new Hex()
+    var level = new Level();
+
     var raycaster = new THREE.Raycaster();
     var mouseVector = new THREE.Vector2();
     var scene = new THREE.Scene();
@@ -29,13 +31,16 @@ $(document).ready(function () {
     var axes = new THREE.AxesHelper(1000);
     scene.add(axes);
 
-
+    /*
     var getHex = hex.getHex();
     scene.add(getHex)
+    */
+
+    var getLevel = level.getLevel();
+    scene.add(getLevel);
 
 
     function render() {
-        camera.lookAt(scene.position)
         renderer.render(scene, camera);
         requestAnimationFrame(render);
     };

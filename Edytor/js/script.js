@@ -101,15 +101,18 @@ $(document).ready(function () {
                 x: $(e.currentTarget).data("x"),
                 y: $(e.currentTarget).data("y"),
                 dirOut: 0,
-                dirIn: 3,
                 type: choosen
+
+            }
+            if (data[data.length - 1]) {
+                obj.dirIn = (data[data.length - 1].dirOut + 3) % 6;
             }
             data.push(obj);
+            console.log(data.length)
         }
 
         else {
             data[num].dirOut = (data[num].dirOut + 1) % 6;
-            data[num].dirIn = (data[num].dirIn + 1) % 6;
             data[num].type = choosen;
         }
 
