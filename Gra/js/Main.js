@@ -1,9 +1,4 @@
-//renderer, kamera, scena
-
 $(document).ready(function () {
-
-    var hex = new Hex()
-    var level = new Level();
 
     var raycaster = new THREE.Raycaster();
     var mouseVector = new THREE.Vector2();
@@ -24,21 +19,17 @@ $(document).ready(function () {
     $("body").append(renderer.domElement);
 
     var orbitControl = new THREE.OrbitControls(camera, renderer.domElement);
+    /*
     orbitControl.addEventListener('change', function () {
         renderer.render(scene, camera)
     });
+    */
 
     var axes = new THREE.AxesHelper(1000);
     scene.add(axes);
 
-    /*
-    var getHex = hex.getHex();
-    scene.add(getHex)
-    */
-
-    var getLevel = level.getLevel();
+    var getLevel = new Level().getLevel();
     scene.add(getLevel);
-
 
     function render() {
         renderer.render(scene, camera);
