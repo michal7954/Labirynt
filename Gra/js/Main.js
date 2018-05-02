@@ -34,6 +34,20 @@ $(document).ready(function () {
     plane.rotateX(Math.PI / 2)
     scene.add(plane);
 
+    var radius = new Settings().GetSettings().radius
+    var getLevel = new Level().getLevel();
+    var start = {
+        x: new LevelData().getLevelData().level[0].x * radius * 344 / 200,
+        y: - (new LevelData().getLevelData().level[0].y * 400 * radius / 200),
+    }
+
+    getLevel.position.set(
+        -start.x,
+        85 * radius / 200,
+        -start.y
+    )
+    scene.add(getLevel);
+
     var geometry = new THREE.TorusBufferGeometry(60, 30, 10, 50);
     var material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
     var torus = new THREE.Mesh(geometry, material);
