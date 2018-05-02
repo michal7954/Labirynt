@@ -34,23 +34,63 @@ $(document).ready(function () {
     plane.rotateX(Math.PI / 2)
     scene.add(plane);
 
-    var radius = new Settings().GetSettings().radius
-    var getLevel = new Level().getLevel();
-    var start = {
-        x: new LevelData().getLevelData().level[0].x * radius * 344 / 200,
-        y: - (new LevelData().getLevelData().level[0].y * 400 * radius / 200),
-    }
+    var geometry = new THREE.TorusBufferGeometry(60, 30, 10, 50);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+    var torus = new THREE.Mesh(geometry, material);
+    torus.rotateX(Math.PI / 2)
+    torus.position.y = 30
+    scene.add(torus);
 
-    getLevel.position.set(
-        -start.x,
-        85 * radius / 200,
-        -start.y
-    )
-    scene.add(getLevel);
+    var player = new Player()
+    var cont = player.getPlayerCont();
+    cont.position.set(200, 0, 200)
+    scene.add(cont)
+
+
+    var clickedVect = new THREE.Vector3(0, 0, 0); // wektor określający punkt kliknięcia
+    var directionVect = new THREE.Vector3(0, 0, 0); // wektor określający kierunek ruchu playera
+
+    $(document).mousedown(function (event) {
+
+        mouseVector.x = (event.clientX / $(window).width()) * 2 - 1;
+        mouseVector.y = -(event.clientY / $(window).height()) * 2 + 1;
+
+        raycaster.setFromCamera(mouseVector, camera);
+        var intersects = raycaster.intersectObjects(scene.children);
+
+        if (intersects.length > 0) {
+            clickedVect = intersects[0].point
+            console.log(clickedVect)
+            directionVect = clickedVect.clone().sub(player.getPlayerCont().position).normalize()
+            console.log(directionVect)
+            //funkcja normalize() przelicza współrzędne x,y,z wektora na zakres 0-1
+            //jest to wymagane przez kolejne funkcje
+
+            torus.position.set(clickedVect.x, 30, clickedVect.z)
+
+            var angle = Math.atan2(
+                player.getPlayerCont().position.clone().x - clickedVect.x,
+                player.getPlayerCont().position.clone().z - clickedVect.z
+            )
+
+            player.getPlayerMesh().rotation.y = angle
+        }
+    })
 
     function render() {
+        if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 4) {
+            player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
+            player.getPlayerCont().position.y = 0
+        }
+        camera.position.x = player.getPlayerCont().position.x
+        camera.position.z = player.getPlayerCont().position.z + 1000
+        camera.position.y = player.getPlayerCont().position.y + 1000
+        camera.lookAt(player.getPlayerCont().position)
+
         renderer.render(scene, camera);
         requestAnimationFrame(render);
     };
     render();
+
+
 });
