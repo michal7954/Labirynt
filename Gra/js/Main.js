@@ -4,7 +4,6 @@ $(document).ready(function () {
     var mouseVector = new THREE.Vector2();
     var scene = new THREE.Scene();
 
-
     var camera = new THREE.PerspectiveCamera(
         45,
         window.innerWidth / window.innerHeight,
@@ -19,8 +18,8 @@ $(document).ready(function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     $("body").append(renderer.domElement);
 
-    var orbitControl = new THREE.OrbitControls(camera, renderer.domElement);
     /*
+    var orbitControl = new THREE.OrbitControls(camera, renderer.domElement);
     orbitControl.addEventListener('change', function () {
         renderer.render(scene, camera)
     });
@@ -41,7 +40,6 @@ $(document).ready(function () {
         x: new LevelData().getLevelData().level[0].x * radius * 344 / 200,
         y: - (new LevelData().getLevelData().level[0].y * 400 * radius / 200),
     }
-
     getLevel.position.set(
         -start.x,
         85 * radius / 200,
@@ -49,14 +47,8 @@ $(document).ready(function () {
     )
     scene.add(getLevel);
 
-    var model = new Model()
-    model.loadModel("js/TRIS.js", function (data) {
-        console.log("model został załadowany")
-        scene.add(data) // data to obiekt kontenera zwrócony z Model.js
-    })
-
-    var geometry = new THREE.TorusBufferGeometry(60, 30, 10, 50);
-    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+    var geometry = new THREE.TorusBufferGeometry(20, 10, 3, 17);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     var torus = new THREE.Mesh(geometry, material);
     torus.rotateX(Math.PI / 2)
     torus.position.y = 30
@@ -64,12 +56,12 @@ $(document).ready(function () {
 
     var player = new Player()
     var cont = player.getPlayerCont();
-    cont.position.set(200, 0, 200)
     scene.add(cont)
-
 
     var clickedVect = new THREE.Vector3(0, 0, 0); // wektor określający punkt kliknięcia
     var directionVect = new THREE.Vector3(0, 0, 0); // wektor określający kierunek ruchu playera
+
+    var war; //czy mogę zakończyć animację ruchu
 
     $(document).mousedown(function (event) {
 
@@ -81,11 +73,7 @@ $(document).ready(function () {
 
         if (intersects.length > 0) {
             clickedVect = intersects[0].point
-            //console.log(clickedVect)
             directionVect = clickedVect.clone().sub(player.getPlayerCont().position).normalize()
-            //console.log(directionVect)
-            //funkcja normalize() przelicza współrzędne x,y,z wektora na zakres 0-1
-            //jest to wymagane przez kolejne funkcje
 
             torus.position.set(clickedVect.x, 30, clickedVect.z)
 
@@ -95,19 +83,31 @@ $(document).ready(function () {
             )
 
             player.getPlayerMesh().rotation.y = angle
+            player.model.setAnimation();
+            war = true
         }
     })
 
     function render() {
-        if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 4) {
+
+        if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3) {
             player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
             player.getPlayerCont().position.y = 0
-        }
-        camera.position.x = player.getPlayerCont().position.x
-        camera.position.z = player.getPlayerCont().position.z + 1000
-        camera.position.y = player.getPlayerCont().position.y + 1000
-        camera.lookAt(player.getPlayerCont().position)
 
+        }
+        else {
+            if (war) {
+                war = false
+                player.model.resetAnimation();
+            }
+        }
+        player.model.updateModel();
+        //*
+        camera.position.x = player.getPlayerCont().position.x + 200
+        camera.position.z = player.getPlayerCont().position.z + 300
+        camera.position.y = player.getPlayerCont().position.y + 800
+        camera.lookAt(player.getPlayerCont().position)
+        //*/
         renderer.render(scene, camera);
         requestAnimationFrame(render);
     };

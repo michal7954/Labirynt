@@ -1,12 +1,13 @@
 function Player() {
 
     var container = new THREE.Object3D()
+    var player
 
-    var geometry = new THREE.BoxGeometry(200, 200, 200);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-    var cube = new THREE.Mesh(geometry, material);
-    cube.position.y = 100;
-    container.add(cube);
+    this.model = new Model()
+    this.model.loadModel("libs/TRIS.js", function (data) {
+        player = data
+        container.add(player)
+    })
 
     var axes = new THREE.AxesHelper(200) // osie do kontroli kierunku ruchu
     container.add(axes)
@@ -18,7 +19,6 @@ function Player() {
 
     //funkcja zwracająca playera
     this.getPlayerMesh = function () {
-        return cube
+        return player
     }
-
 }
