@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Modele</title>
+    <style>
+        html,
+        body,
+        root {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: grey;
+        }
+
+        #select {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://threejs.org/build/three.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(0x808080);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#root").append(renderer.domElement);
+
+            var scene = new THREE.Scene();
+            var clock = new THREE.Clock();
+            var mixer;
+            var clonemixer = [];
+            var origin;
+
+            var camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                10000
+            );
+            camera.position.set(800, 600, 800)
+            camera.lookAt(scene.position)
+
+            var axes = new THREE.AxesHelper(10000)
+            //scene.add(axes)
+
+            var geometry = new THREE.PlaneGeometry(2000, 2000, 20, 20)
+            var material = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                side: THREE.DoubleSide,
+                wireframe: true,
+                transparent: false,
+                opacity: 1
+            });
+            var plane = new THREE.Mesh(geometry, material);
+            plane.rotateX(Math.PI / 2);
+            plane.position.set(0, 0, 0)
+            scene.add(plane);
+
+            //---------- MODEL
+
+
+            var modelMaterial = new THREE.MeshBasicMaterial(
+                {
+                    map: THREE.ImageUtils.loadTexture("kenny.png"),
+                    morphTargets: true // odpowiada za animację materiału modelu
+                });
+
+            var loader = new THREE.JSONLoader();
+
+            loader.load('tris.js', function (geometry) {
+
+                var meshModel = new THREE.Mesh(geometry, modelMaterial)
+                meshModel.name = "name";
+                meshModel.rotation.y = 0; // ustaw obrót modelu
+                meshModel.position.y = 202; // ustaw pozycje modelu
+                meshModel.scale.set(10, 10, 10); // ustaw skalę modelu
+
+                scene.add(meshModel);
+                origin = meshModel.clone()
+
+                mixer = new THREE.AnimationMixer(meshModel);
+                mixer.clipAction("stand").play();
+                var oldaction = "stand"
+                //mixer.clipAction(oldaction).stop();
+
+                var box = new THREE.Box3().setFromObject(meshModel);
+                //console.log(box.getSize().y);
+
+                var select = $("<select>")
+                    .attr("id", "select")
+                var option = [];
+                var names = [];
+                for (var i = 0; i < geometry.animations.length; i++) {
+                    names[i] = geometry.animations[i].name
+                    //console.log(geometry.animations[i].name);
+                    option[i] = $("<option>")
+                        .attr("value", geometry.animations[i].name)
+                        .text(geometry.animations[i].name)
+                    $(select).append(option[i])
+                }
+                $("#root").append(select)
+
+
+
+
+
+                $("#select").on("change", function () {
+                    mixer.clipAction(oldaction).stop();
+                    oldaction = $("#select").val()
+                    mixer.clipAction($("#select").val()).play();
+                });
+
+                //----------- USER INTERFACE CONTROLLER
+
+                var clonecounter = 0;
+
+                $("#add").on("click", function () {
+                    if (clonecounter < 3) {
+                        clonecounter++;
+                        clones(clonecounter);
+                    }
+                });
+
+                $("#remove").on("click", function () {
+                    if (clonecounter) {
+                        clonecounter--;
+                        clones(clonecounter);
+                    }
+                });
+
+                //----------- KLONY
+
+
+                var container = new THREE.Object3D();
+
+
+                function clones(clonecounter) {
+
+                    scene.remove(container)
+
+                    clonemixer = []
+                    container = new THREE.Object3D();
+
+                    switch (clonecounter) {
+                        case 0:
+                            break;
+                        case 1:
+                            for (i = -1; i < 2; i++) {
+                                for (j = -1; j < 2; j++) {
+                                    if (i != 0 || j != 0) {
+                                        var clone = origin.clone();
+                                        clone.scale.set(6, 6, 6);
+                                        clone.position.x = i * 250;
+                                        clone.position.y = 120;
+                                        clone.position.z = j * 250;
+                                        container.add(clone)
+                                        clonemixer.push(new THREE.AnimationMixer(clone));
+                                        clonemixer[clonemixer.length - 1].clipAction("run").play();
+                                    }
+                                }
+                            }
+                            scene.add(container)
+                            break;
+                        case 2:
+                            for (i = -2; i < 3; i++) {
+                                for (j = -2; j < 3; j++) {
+                                    if (i != 0 || j != 0) {
+                                        var clone = origin.clone();
+                                        clone.scale.set(6, 6, 6);
+                                        clone.position.x = i * 250;
+                                        clone.position.y = 120;
+                                        clone.position.z = j * 250;
+                                        container.add(clone)
+                                        clonemixer.push(new THREE.AnimationMixer(clone));
+                                        clonemixer[clonemixer.length - 1].clipAction("run").play();
+                                    }
+                                }
+                            }
+                            scene.add(container)
+                            break;
+                        case 3:
+                            for (i = -3; i < 4; i++) {
+                                for (j = -3; j < 4; j++) {
+                                    if (i != 0 || j != 0) {
+                                        var clone = origin.clone();
+                                        clone.scale.set(6, 6, 6);
+                                        clone.position.x = i * 250;
+                                        clone.position.y = 120;
+                                        clone.position.z = j * 250;
+                                        container.add(clone)
+                                        clonemixer.push(new THREE.AnimationMixer(clone));
+                                        clonemixer[clonemixer.length - 1].clipAction("run").play();
+                                    }
+                                }
+                            }
+                            scene.add(container)
+                            break;
+                    }
+                }
+
+
+            });
+
+
+
+            var angle = 0;
+            function render() {
+
+                camera.position.x = 800 * Math.sin(angle)
+                camera.position.z = 800 * Math.cos(angle)
+                //camera.lookAt(scene.position)
+                camera.lookAt(0, 150, 0)
+                angle += 0.01;
+
+                var delta = clock.getDelta();
+                //console.log(delta) // zobacz czy widać zmieniającą się liczbę w konsoli 
+                if (mixer) mixer.update(delta)
+
+
+                for (i = 0; i < clonemixer.length; i++) {
+                    if (clonemixer[i]) clonemixer[i].update(delta)
+
+                }
+
+
+                requestAnimationFrame(render);
+                renderer.render(scene, camera);
+            }
+            render();
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <div id="root">
+        <button id="add">ADD</button>
+        <button id="remove">REMOVE</button>
+    </div>
+</body>
+
+</html>
