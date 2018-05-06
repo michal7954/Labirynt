@@ -4,6 +4,7 @@ $(document).ready(function () {
     var mouseVector = new THREE.Vector2();
     var scene = new THREE.Scene();
 
+
     var camera = new THREE.PerspectiveCamera(
         45,
         window.innerWidth / window.innerHeight,
@@ -48,6 +49,12 @@ $(document).ready(function () {
     )
     scene.add(getLevel);
 
+    var model = new Model()
+    model.loadModel("js/TRIS.js", function (data) {
+        console.log("model został załadowany")
+        scene.add(data) // data to obiekt kontenera zwrócony z Model.js
+    })
+
     var geometry = new THREE.TorusBufferGeometry(60, 30, 10, 50);
     var material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
     var torus = new THREE.Mesh(geometry, material);
@@ -74,9 +81,9 @@ $(document).ready(function () {
 
         if (intersects.length > 0) {
             clickedVect = intersects[0].point
-            console.log(clickedVect)
+            //console.log(clickedVect)
             directionVect = clickedVect.clone().sub(player.getPlayerCont().position).normalize()
-            console.log(directionVect)
+            //console.log(directionVect)
             //funkcja normalize() przelicza współrzędne x,y,z wektora na zakres 0-1
             //jest to wymagane przez kolejne funkcje
 
