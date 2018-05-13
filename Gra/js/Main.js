@@ -58,24 +58,79 @@ $(document).ready(function () {
     var cont = player.getPlayerCont();
     scene.add(cont)
 
+    ally = new Ally()
+    ally.loadModel("libs/TRIS.js", function (data) {
+        ally = data
+        scene.add(ally)
+    })
+
     var clickedVect = new THREE.Vector3(0, 0, 0); // wektor określający punkt kliknięcia
     var directionVect = new THREE.Vector3(0, 0, 0); // wektor określający kierunek ruchu playera
 
     var war; //czy mogę zakończyć animację ruchu
 
+    var mouseclick;
+    var moj_event;
     $(document).mousedown(function (event) {
+        moj_event = event;
+        mouseclick = true;
+    })
 
-        mouseVector.x = (event.clientX / $(window).width()) * 2 - 1;
-        mouseVector.y = -(event.clientY / $(window).height()) * 2 + 1;
+    $(document).mouseup(function () {
+        mouseclick = false;
+    })
+
+    $(document).mousemove(function (event) {
+        moj_event = event;
+        moj_raycaster(moj_event)
+
+        hover(moj_event)
+    })
+
+    function moj_raycaster(e) {
+        if (mouseclick) {
+            mouseVector.x = (e.clientX / $(window).width()) * 2 - 1;
+            mouseVector.y = -(e.clientY / $(window).height()) * 2 + 1;
+
+            raycaster.setFromCamera(mouseVector, camera);
+            var intersects = raycaster.intersectObjects(scene.children);
+
+            if (intersects.length > 0) {
+                clickedVect = intersects[0].point
+                directionVect = clickedVect.clone().sub(player.getPlayerCont().position).normalize()
+
+                torus.position.set(clickedVect.x, 0, clickedVect.z)
+
+                var angle = Math.atan2(
+                    player.getPlayerCont().position.clone().x - clickedVect.x,
+                    player.getPlayerCont().position.clone().z - clickedVect.z
+                )
+
+                player.getPlayerMesh().rotation.y = angle
+                player.model.setAnimation();
+                war = true
+            }
+        }
+    }
+
+    function hover(e) {
+        mouseVector.x = (e.clientX / $(window).width()) * 2 - 1;
+        mouseVector.y = -(e.clientY / $(window).height()) * 2 + 1;
 
         raycaster.setFromCamera(mouseVector, camera);
         var intersects = raycaster.intersectObjects(scene.children);
 
         if (intersects.length > 0) {
-            clickedVect = intersects[0].point
-            directionVect = clickedVect.clone().sub(player.getPlayerCont().position).normalize()
+            hoverVect = intersects[0].point
 
-            torus.position.set(clickedVect.x, 30, clickedVect.z)
+
+            if (Math.abs(hoverVect.x - ally.position.x) < 40 && Math.abs(hoverVect.z - ally.position.z) < 40) {
+                console.log(ally.children[1].material.color)
+                ally.children[1].material.color.g = 0;
+            }
+            else {
+                ally.children[1].material.color.g = 1;
+            }
 
             var angle = Math.atan2(
                 player.getPlayerCont().position.clone().x - clickedVect.x,
@@ -86,9 +141,11 @@ $(document).ready(function () {
             player.model.setAnimation();
             war = true
         }
-    })
+    }
 
     function render() {
+
+        moj_raycaster(moj_event)
 
         if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3 || Math.abs(player.getPlayerCont().position.z - torus.position.z) > 3) {
             player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
