@@ -12,6 +12,7 @@ function Model() {
 
             var modelMaterial = new THREE.MeshBasicMaterial({
                 map: THREE.ImageUtils.loadTexture("gfx/kenny.png"),
+                morphTargets: true
             });
 
             var meshModel = new THREE.Mesh(geometry, modelMaterial)
@@ -29,7 +30,7 @@ function Model() {
     }
 
     // update mixera
-    var delta = 0.01;
+    var delta = 0.04;
     this.updateModel = function () {
         if (mixer) mixer.update(delta)
     }

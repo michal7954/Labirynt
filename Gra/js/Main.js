@@ -90,7 +90,7 @@ $(document).ready(function () {
 
     function render() {
 
-        if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3) {
+        if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3 || Math.abs(player.getPlayerCont().position.z - torus.position.z) > 3) {
             player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
             player.getPlayerCont().position.y = 0
 
@@ -105,7 +105,7 @@ $(document).ready(function () {
         //*
         camera.position.x = player.getPlayerCont().position.x + 200
         camera.position.z = player.getPlayerCont().position.z + 300
-        camera.position.y = player.getPlayerCont().position.y + 800
+        camera.position.y = player.getPlayerCont().position.y + 600
         camera.lookAt(player.getPlayerCont().position)
         //*/
         renderer.render(scene, camera);
