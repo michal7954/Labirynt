@@ -58,22 +58,33 @@ $(document).ready(function () {
     var cont = player.getPlayerCont();
     scene.add(cont)
 
-    ally = new Ally()
-    ally.loadModel("libs/TRIS.js", function (data) {
+    ally_class = new Ally()
+    var ally;
+    ally_class.loadModel("libs/TRIS.js", function (data) {
         ally = data
         scene.add(ally)
+        ally.children[0].rotation.y = -Math.PI / 2;
+        ally.position.set(400, 0, 200)
     })
+
 
     var clickedVect = new THREE.Vector3(0, 0, 0); // wektor określający punkt kliknięcia
     var directionVect = new THREE.Vector3(0, 0, 0); // wektor określający kierunek ruchu playera
+    var directionVect2 = new THREE.Vector3(0, 0, 0);
 
-    var war; //czy mogę zakończyć animację ruchu
 
     var mouseclick;
     var moj_event;
+    var clicked = false;
     $(document).mousedown(function (event) {
         moj_event = event;
         mouseclick = true;
+        if (mauseover) {
+            ally.children[1].material.color.r = 0;
+            ally.children[1].material.color.g = 0;
+            ally.children[1].material.color.b = 1;
+            clicked = true;
+        }
     })
 
     $(document).mouseup(function () {
@@ -83,8 +94,8 @@ $(document).ready(function () {
     $(document).mousemove(function (event) {
         moj_event = event;
         moj_raycaster(moj_event)
-
         hover(moj_event)
+
     })
 
     function moj_raycaster(e) {
@@ -108,11 +119,11 @@ $(document).ready(function () {
 
                 player.getPlayerMesh().rotation.y = angle
                 player.model.setAnimation();
-                war = true
             }
         }
     }
 
+    var mouseover = false;
     function hover(e) {
         mouseVector.x = (e.clientX / $(window).width()) * 2 - 1;
         mouseVector.y = -(e.clientY / $(window).height()) * 2 + 1;
@@ -123,23 +134,14 @@ $(document).ready(function () {
         if (intersects.length > 0) {
             hoverVect = intersects[0].point
 
-
             if (Math.abs(hoverVect.x - ally.position.x) < 40 && Math.abs(hoverVect.z - ally.position.z) < 40) {
-                console.log(ally.children[1].material.color)
-                ally.children[1].material.color.g = 0;
+                ally.children[1].visible = true;
+                mauseover = true;
             }
             else {
-                ally.children[1].material.color.g = 1;
+                ally.children[1].visible = false;
+                mauseover = false;
             }
-
-            var angle = Math.atan2(
-                player.getPlayerCont().position.clone().x - clickedVect.x,
-                player.getPlayerCont().position.clone().z - clickedVect.z
-            )
-
-            player.getPlayerMesh().rotation.y = angle
-            player.model.setAnimation();
-            war = true
         }
     }
 
@@ -150,15 +152,36 @@ $(document).ready(function () {
         if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3 || Math.abs(player.getPlayerCont().position.z - torus.position.z) > 3) {
             player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
             player.getPlayerCont().position.y = 0
-
         }
         else {
-            if (war) {
-                war = false
-                player.model.resetAnimation();
-            }
+            player.model.resetAnimation();
         }
         player.model.updateModel();
+
+        if (ally)
+            ally.children[1].rotateZ(Math.PI / 120);
+
+        if (clicked) {
+            directionVect2 = player.getPlayerCont().position.clone().sub(ally.position).normalize()
+
+            var angle2 = Math.atan2(
+                ally.position.clone().x - player.getPlayerCont().position.x,
+                ally.position.clone().z - player.getPlayerCont().position.z
+            )
+
+
+            if (Math.abs(player.getPlayerCont().position.x - ally.position.x) > 80 || Math.abs(player.getPlayerCont().position.z - ally.position.z) > 80) {
+                ally.translateOnAxis(directionVect2, 4.5) // 5 - speed
+                ally.position.y = 0
+                ally_class.setAnimation()
+            }
+            else {
+                ally_class.resetAnimation();
+            }
+            ally.children[0].rotation.y = angle2 - Math.PI / 2
+            ally_class.updateModel();
+        }
+
         //*
         camera.position.x = player.getPlayerCont().position.x + 200
         camera.position.z = player.getPlayerCont().position.z + 300

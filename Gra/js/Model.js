@@ -40,6 +40,6 @@ function Model() {
         mixer.clipAction("run").play();
     }
     this.resetAnimation = function () {
-        mixer.clipAction("run").stop();
+        if (mixer) mixer.clipAction("run").stop();
     }
 }

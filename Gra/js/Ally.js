@@ -26,10 +26,11 @@ function Ally() {
 
             container.add(meshModel)
 
-            var geometry = new THREE.RingGeometry(30, 50, 7);
+            var geometry = new THREE.RingGeometry(30, 40, 7);
             var material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(Math.PI / 2)
+            mesh.visible = false;
             container.add(mesh);
 
             callback(container);
