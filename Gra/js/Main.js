@@ -35,7 +35,9 @@ $(document).ready(function () {
     scene.add(plane);
 
     var radius = new Settings().GetSettings().radius
-    var getLevel = new Level().getLevel();
+
+    var level = new Level();
+    var getLevel = level.getLevel();
     var start = {
         x: new LevelData().getLevelData().level[0].x * radius * 344 / 200,
         y: - (new LevelData().getLevelData().level[0].y * 400 * radius / 200),
@@ -74,6 +76,7 @@ $(document).ready(function () {
 
 
     var mouseclick;
+    var kolizja = false;
     var moj_event;
     var clicked = false;
     $(document).mousedown(function (event) {
@@ -147,16 +150,21 @@ $(document).ready(function () {
 
     function render() {
 
-        moj_raycaster(moj_event)
+        if (!kolizja) {
+            moj_raycaster(moj_event)
 
-        if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3 || Math.abs(player.getPlayerCont().position.z - torus.position.z) > 3) {
-            player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
-            player.getPlayerCont().position.y = 0
+            if (Math.abs(player.getPlayerCont().position.x - torus.position.x) > 3 || Math.abs(player.getPlayerCont().position.z - torus.position.z) > 3) {
+                player.getPlayerCont().translateOnAxis(directionVect, 5) // 5 - speed
+                player.getPlayerCont().position.y = 0
+            }
+            else {
+                player.model.resetAnimation();
+            }
+            player.model.updateModel();
         }
-        else {
-            player.model.resetAnimation();
-        }
-        player.model.updateModel();
+
+
+
 
         if (ally)
             ally.children[1].rotateZ(Math.PI / 120);
@@ -180,6 +188,31 @@ $(document).ready(function () {
             }
             ally.children[0].rotation.y = angle2 - Math.PI / 2
             ally_class.updateModel();
+        }
+
+
+        //kolizje
+
+        var ray = new THREE.Ray(player.getPlayerCont().position.clone(), player.getPlayerCont().getWorldDirection().clone())
+
+        raycaster.ray = ray
+        playerpoz = player.getPlayerCont().position
+
+        var intersects = raycaster.intersectObjects(level.getHexy(), true);
+        if (intersects[0]) {
+            console.log(intersects[0].distance) // odległość od vertex-a na wprost, zgodnie z kierunkiem ruchu
+            console.log(intersects[0].point) // współrzędne vertexa na wprost
+
+
+            if (intersects[0].distance < 20) {
+                //
+                player.getPlayerCont().position = playerpoz
+                kolizja = true;
+            }
+            else {
+                playerpoz = player.getPlayerCont().position.clone()
+                kolizja = false;
+            }
         }
 
         //*

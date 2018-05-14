@@ -21,4 +21,8 @@ function Level() {
     this.getLevel = function () {
         return level;
     }
+
+    this.getHexy = function () {
+        return hexy;
+    }
 }
