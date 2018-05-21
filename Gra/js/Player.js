@@ -1,7 +1,7 @@
 function Player() {
 
     var container = new THREE.Object3D()
-    var player
+    var player = new THREE.Object3D()
 
     this.model = new Model()
     this.model.loadModel("libs/TRIS.js", function (data) {

@@ -14,6 +14,7 @@ function Hex(tab) {
             side[i].position.x = Math.sin(Math.PI / 3 * i) * radius;
             side[i].position.z = Math.cos(Math.PI / 3 * i) * radius;
             side[i].lookAt(container.position)
+
             container.add(side[i])
         }
         else if (tab[1] == i) {
@@ -24,6 +25,7 @@ function Hex(tab) {
             side[i].position.x = Math.sin(Math.PI / 3 * i) * radius;
             side[i].position.z = Math.cos(Math.PI / 3 * i) * radius;
             side[i].lookAt(container.position)
+            //side[i].rotation.x += 1
             container.add(side[i])
         }
     }

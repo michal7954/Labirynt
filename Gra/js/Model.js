@@ -19,7 +19,7 @@ function Model() {
             meshModel.name = "name";
             meshModel.rotation.y = -Math.PI / 2;
             meshModel.position.y = 60 * radius / 200;
-            meshModel.scale.set(3 * radius / 200, 3 * radius / 200, 3 * radius / 200);
+            meshModel.scale.set(3, 3, 3);
 
             mixer = new THREE.AnimationMixer(meshModel);
             mixer.clipAction("stand").play();
@@ -30,7 +30,7 @@ function Model() {
     }
 
     // update mixera
-    var delta = 0.04;
+    var delta = 0.015;
     this.updateModel = function () {
         if (mixer) mixer.update(delta)
     }

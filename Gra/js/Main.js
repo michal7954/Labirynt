@@ -119,7 +119,7 @@ $(document).ready(function () {
                     player.getPlayerCont().position.clone().x - clickedVect.x,
                     player.getPlayerCont().position.clone().z - clickedVect.z
                 )
-
+                //!!!
                 player.getPlayerMesh().rotation.y = angle
                 player.model.setAnimation();
             }
@@ -147,6 +147,12 @@ $(document).ready(function () {
             }
         }
     }
+
+    //  WEKTORY GRAFICZNE
+
+
+    vector = new Vector(new THREE.Vector3(0, 50, 0), new THREE.Vector3(0, 50, 500)).getContainer()
+    scene.add(vector)
 
     function render() {
 
@@ -192,20 +198,22 @@ $(document).ready(function () {
 
 
         //kolizje
-
-        var ray = new THREE.Ray(player.getPlayerCont().position.clone(), player.getPlayerCont().getWorldDirection().clone())
+        //console.log(player.getPlayerMesh().getWorldDirection())
+        direction_opposite = new THREE.Vector3(-player.getPlayerMesh().getWorldDirection().x, 0, -player.getPlayerMesh().getWorldDirection().z)
+        var ray = new THREE.Ray(player.getPlayerCont().position.clone(), direction_opposite)
 
         raycaster.ray = ray
         playerpoz = player.getPlayerCont().position
 
         var intersects = raycaster.intersectObjects(level.getHexy(), true);
         if (intersects[0]) {
-            console.log(intersects[0].distance) // odległość od vertex-a na wprost, zgodnie z kierunkiem ruchu
-            console.log(intersects[0].point) // współrzędne vertexa na wprost
+            //console.log(intersects[0].distance) // odległość od vertex-a na wprost, zgodnie z kierunkiem ruchu
+            //console.log(intersects[0].point) // współrzędne vertexa na wprost
+            scene.remove(vector)
+            vector = new Vector(player.getPlayerCont().position, intersects[0].point).getContainer()
+            scene.add(vector)
 
-
-            if (intersects[0].distance < 20) {
-                //
+            if (intersects[0].distance < 60) {
                 player.getPlayerCont().position = playerpoz
                 kolizja = true;
             }
@@ -214,6 +222,10 @@ $(document).ready(function () {
                 kolizja = false;
             }
         }
+
+
+
+
 
         //*
         camera.position.x = player.getPlayerCont().position.x + 200

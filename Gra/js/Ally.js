@@ -19,7 +19,7 @@ function Ally() {
             meshModel.name = "name";
             meshModel.rotation.y = -Math.PI / 2;
             meshModel.position.y = 60 * radius / 200;
-            meshModel.scale.set(2 * radius / 200, 2 * radius / 200, 2 * radius / 200);
+            meshModel.scale.set(2, 2, 2);
 
             mixer = new THREE.AnimationMixer(meshModel);
             mixer.clipAction("stand").play();
