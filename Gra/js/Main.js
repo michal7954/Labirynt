@@ -4,6 +4,7 @@ $(document).ready(function () {
     var mouseVector = new THREE.Vector2();
     var scene = new THREE.Scene();
 
+
     var camera = new THREE.PerspectiveCamera(
         45,
         window.innerWidth / window.innerHeight,
@@ -153,7 +154,7 @@ $(document).ready(function () {
 
     vector = new Vector(new THREE.Vector3(0, 50, 0), new THREE.Vector3(0, 50, 500)).getContainer()
     scene.add(vector)
-
+    console.log(level.campfires)
     function render() {
 
         if (!kolizja) {
@@ -225,7 +226,10 @@ $(document).ready(function () {
 
 
 
+        for (i = 0; i < level.campfires.length; i++) {
 
+            level.campfires[i].updateFire();
+        }
 
         //*
         camera.position.x = player.getPlayerCont().position.x + 200

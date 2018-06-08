@@ -30,6 +30,19 @@ function Hex(tab) {
         }
     }
 
+    new_fire = new Fire()
+    campfire = new_fire.getFire();
+    campfire.position.set(0, 0, 0)
+    container.add(campfire);
+
+    this.getFire = function () {
+        return campfire
+    }
+
+    this.updateCampfire = function () {
+        return new_fire;
+    }
+
     this.getHex = function () {
         return container
     }

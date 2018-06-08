@@ -4,9 +4,13 @@ function Level() {
     var hexy = [];
     var data = new LevelData().getLevelData();
     var radius = new Settings().GetSettings().radius;
+    this.campfires = []
 
     for (i = 0; i < data.level.length; i++) {
-        hexy[i] = new Hex([data.level[i].dirOut, data.level[i].dirIn]).getHex();
+        new_hex = new Hex([data.level[i].dirOut, data.level[i].dirIn])
+        hexy[i] = new_hex.getHex();
+        fire = new_hex.updateCampfire();
+        this.campfires.push(fire)
         //hexy[i].rotation.y += 0.1
         hexy[i].position.x = data.level[i].x * radius * 344 / 200;
         if (data.level[i].x % 2 == 0) {
@@ -17,6 +21,7 @@ function Level() {
         }
         level.add(hexy[i]);
         //level.rotation.y += (Math.PI / 4)
+
     }
 
     this.getLevel = function () {
