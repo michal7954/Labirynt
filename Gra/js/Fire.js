@@ -32,11 +32,11 @@ function Fire() {
     }
 
     this.updateFire = function () {
-        console.log(fireTable)
+        //console.log(fireTable)
         for (var i = 0; i < campfireCounter; i++) {
             fireTable[i].position.y += speed[Math.floor((Math.random() * speed.length) + 0)];
             fireTable[i].material.opacity -= 0.045;
-            console.log(fireTable[i].material.opacity)
+            //console.log(fireTable[i].material.opacity)
             if (fireTable[i].position.y >= 80) {
                 fireTable[i].position.y = Math.floor((Math.random() * speed.length) + 0)
                 fireTable[i].material.opacity = 1;

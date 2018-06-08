@@ -1,4 +1,4 @@
-function Hex(tab) {
+function Hex(tab, type) {
 
     var radius = new Settings().GetSettings().radius;
     var container = new THREE.Object3D()
@@ -18,7 +18,12 @@ function Hex(tab) {
             container.add(side[i])
         }
         else if (tab[1] == i) {
-            side[i] = null;
+            side[i] = new Doors().getDoors();
+            side[i].position.x = Math.sin(Math.PI / 3 * i) * radius;
+            side[i].position.z = Math.cos(Math.PI / 3 * i) * radius;
+            side[i].lookAt(container.position)
+
+            container.add(side[i])
         }
         else {
             side[i] = wall.clone()
@@ -30,18 +35,25 @@ function Hex(tab) {
         }
     }
 
-    new_fire = new Fire()
-    campfire = new_fire.getFire();
-    campfire.position.set(0, 0, 0)
-    container.add(campfire);
+    if (type == "light") {
+        new_fire = new Fire()
+        campfire = new_fire.getFire();
+        campfire.position.set(0, 0, 0)
+        container.add(campfire);
 
-    this.getFire = function () {
-        return campfire
+        this.updateCampfire = function () {
+            return new_fire;
+        }
+
+        this.getFire = function () {
+            return campfire
+        }
     }
 
-    this.updateCampfire = function () {
-        return new_fire;
-    }
+
+
+
+
 
     this.getHex = function () {
         return container

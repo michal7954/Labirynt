@@ -7,10 +7,13 @@ function Level() {
     this.campfires = []
 
     for (i = 0; i < data.level.length; i++) {
-        new_hex = new Hex([data.level[i].dirOut, data.level[i].dirIn])
+        new_hex = new Hex([data.level[i].dirOut, data.level[i].dirIn], data.level[i].type)
         hexy[i] = new_hex.getHex();
-        fire = new_hex.updateCampfire();
-        this.campfires.push(fire)
+        if (data.level[i].type == "light") {
+            fire = new_hex.updateCampfire();
+            this.campfires.push(fire)
+        }
+
         //hexy[i].rotation.y += 0.1
         hexy[i].position.x = data.level[i].x * radius * 344 / 200;
         if (data.level[i].x % 2 == 0) {
